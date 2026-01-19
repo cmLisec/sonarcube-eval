@@ -18,7 +18,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: '8.0.x'
     
     - name: Install SonarScanner for .NET
       run: dotnet tool install --global dotnet-sonarscanner
@@ -36,14 +36,25 @@ jobs:
           /o:"cmlisec" \
           /d:sonar.token="${SONAR_TOKEN}" \
           /d:sonar.host.url="https://sonarcloud.io" \
-          /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" \
+          /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
           /d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
     
     - name: Build
       run: dotnet build --no-restore --configuration Release
     
-    - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx" --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+    - name: Test with Coverage
+      run: |
+        dotnet test --no-build --configuration Release --verbosity normal \
+          --logger "trx;LogFileName=test-results.trx" \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./TestResults \
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+    
+    - name: Move coverage files
+      if: always()
+      run: |
+        mkdir -p ./TestResults/Coverage
+        find ./TestResults -name "coverage.opencover.xml" -exec cp {} ./TestResults/Coverage/ \;
     
     - name: End SonarCloud analysis
       env:
@@ -56,13 +67,13 @@ jobs:
       if: always()
       with:
         name: test-results
-        path: '**/TestResults/**/*'
+        path: './TestResults/**/*'
     
     - name: Generate code coverage report
       if: success()
       run: |
         dotnet tool install -g dotnet-reportgenerator-globaltool
-        reportgenerator -reports:**/coverage.opencover.xml -targetdir:coverage -reporttypes:Html
+        reportgenerator -reports:./TestResults/**/coverage.opencover.xml -targetdir:coverage -reporttypes:Html
     
     - name: Upload coverage report
       uses: actions/upload-artifact@v4
