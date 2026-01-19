@@ -4,14 +4,14 @@ A simple ASP.NET Core Web API for managing products with full CRUD operations.
 
 ## Features
 
-- ? RESTful API for Product management
-- ? In-memory data store with static initial data
-- ? Full CRUD operations (Create, Read, Update, Delete)
-- ? Swagger/OpenAPI documentation
-- ? Comprehensive unit tests using NUnit and Moq
-- ? Integration tests with WebApplicationFactory
-- ? GitHub Actions CI/CD pipeline
-- ? Code coverage reporting
+- RESTful API for Product management
+- In-memory data store with static initial data
+- Full CRUD operations (Create, Read, Update, Delete)
+- Swagger/OpenAPI documentation
+- Comprehensive unit tests using NUnit and Moq
+- Integration tests with WebApplicationFactory
+- GitHub Actions CI/CD pipeline
+- Code coverage reporting
 
 ## Project Structure
 
@@ -127,10 +127,10 @@ The project includes comprehensive test coverage:
 ## CI/CD Pipeline
 
 The GitHub Actions workflow automatically:
-- ? Builds the solution on every PR and push to main
-- ? Runs all tests
-- ? Generates code coverage reports
-- ? Uploads test results and coverage reports as artifacts
+- Builds the solution on every PR and push to main
+- Runs all tests
+- Generates code coverage reports
+- Uploads test results and coverage reports as artifacts
 
 ## Technologies Used
 
